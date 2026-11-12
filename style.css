@@ -89,19 +89,23 @@ p{margin:0 0 1em}
 .akcje{display:grid;gap:clamp(14px,min(1.6vw,2.8vh),30px);margin-top:clamp(28px,min(3.6vw,5.4vh),68px);width:min(100%,max(480px,44vw))}
 .podpis-foto{position:absolute;right:var(--pad);bottom:clamp(16px,2vw,40px);color:#fff;font-size:clamp(14px,1.45vw,27px);padding:clamp(8px,.8vw,14px) clamp(14px,1.3vw,24px);min-width:min(380px,21vw);background:linear-gradient(90deg,rgba(64,66,68,.25) 0,rgba(64,66,68,.72) 38%,rgba(58,57,54,.86) 100%)}
 
+.lead-m{display:none}
 @media (max-width:759px){
-  .hero{display:flex;flex-direction:column;align-items:stretch;min-height:calc(100svh - var(--hdr))}
-  .hero-foto{position:relative;inset:auto;flex:1 1 auto;min-height:clamp(170px,30svh,320px)}
+  .hero{display:flex;flex-direction:column;align-items:stretch;height:calc(100svh - var(--hdr));min-height:440px}
+  .hero-foto{position:relative;inset:auto;flex:1 1 auto;min-height:120px}
+  .lead-d{display:none}
+  .lead-m{display:block;padding:34px var(--pad) 0}
+  .lead-m+.sek{padding-top:44px}
   .hero-foto img{position:absolute;inset:0;object-position:60% 45%}
   .hero-foto::after{display:none}
   .podpis-foto{right:0;bottom:0;min-width:0;font-size:14px;padding:7px 16px 7px 30px}
-  .hero-in{flex:none;padding:20px var(--pad) 26px}
+  .hero-in{flex:none;padding:14px var(--pad) 22px}
   .hero-tekst{width:100%}
   .lead{font-size:16px;line-height:1.52}
-  .osm-linia{margin:16px 0 8px}
+  .osm-linia{margin:0 0 10px}
   .osm-linia svg{width:58px}
   .hero h1{font-size:clamp(40px,11.6vw,52px)}
-  .akcje{width:100%;margin-top:28px;gap:10px}
+  .akcje{width:100%;margin-top:26px;gap:10px}
   .akcje .bar{min-height:48px;font-size:18px}
 }
 
@@ -178,13 +182,18 @@ p{margin:0 0 1em}
 @media (max-width:899px){
   .obrazy{grid-template-columns:minmax(0,1fr);gap:0}
   .cykle{grid-template-columns:1fr 1fr;gap:8px}
-  .cyk{font-size:17px;min-height:44px;padding:4px 8px}
+  .cyk{font-size:16px;min-height:40px;padding:3px 8px}
   .cyk .k{width:14px;height:14px}
   .cyk[aria-selected="true"] .k::after{inset:4px}
   .scena{flex-direction:column;align-items:stretch;min-height:0;padding-right:0;gap:14px}
   .obraz-box{max-width:100%}
-  .obraz-box img{max-height:68svh}
-  .opis-obrazu{flex:none}
+  .obraz-box img{max-height:52svh}
+  .opis-obrazu{flex:none;display:grid;grid-template-columns:1fr auto;column-gap:12px;align-items:center}
+  .opis-obrazu .t,.opis-obrazu .x{grid-column:1}
+  .opis-obrazu .nawig{grid-column:2;grid-row:1/3;margin-top:0}
+  .nawig .licz{min-width:44px}
+  .opis-obrazu{font-size:15.5px}
+  .opis-obrazu .nawig button{width:40px;height:40px}
   .miniatury{justify-content:flex-start;padding-right:0}
   .miniatury button,.miniatury img{height:52px}
   .cykle-lista{display:contents}
