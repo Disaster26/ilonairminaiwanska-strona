@@ -47,7 +47,7 @@
   var C=window.CYKLE,img=d.getElementById('obraz');
   if(C&&img){
     var opis=d.getElementById('opis'),ot=d.getElementById('o-t'),ox=d.getElementById('o-x'),licz=d.getElementById('o-licz'),pr=d.getElementById('o-prev'),nx=d.getElementById('o-next'),mini=d.getElementById('miniatury'),scena=d.getElementById('scena');
-    var cur=null,i=0,box=d.querySelector('.obraz-box'),opisO=d.querySelector('.opis-obrazu');
+    var cur=null,i=0,box=d.querySelector('.obraz-box'),opisO=d.querySelector('.opis-obrazu'),nawO=d.getElementById('o-nawig');
     var pusty=d.createElement('p');pusty.className='puste';pusty.textContent='Reprodukcje i opis cyklu Faunofloris zostaną dodane wkrótce.';
     function rysuj(){
       var c=C[cur],o=c.obr[i];
@@ -60,12 +60,15 @@
       licz.textContent=(i+1)+' / '+c.obr.length;
       pr.disabled=i===0;nx.disabled=i===c.obr.length-1;
       mini.querySelectorAll('button').forEach(function(b,j){b.setAttribute('aria-current',j===i?'true':'false')});
+      var akt=mini.children[i];
+      if(akt){var l=akt.offsetLeft-mini.offsetLeft,r=l+akt.offsetWidth;if(l<mini.scrollLeft||r>mini.scrollLeft+mini.clientWidth)mini.scrollTo({left:Math.max(0,l-8),behavior:'smooth'})}
     }
     function wybierz(k,bezHash){
       if(!C[k])k='prapamiec';cur=k;i=0;var c=C[k];
       d.querySelectorAll('.cyk[data-c]').forEach(function(b){b.setAttribute('aria-selected',b.dataset.c===k?'true':'false')});
       scena.setAttribute('aria-labelledby','tab-'+k);
       opis.innerHTML=c.o.map(function(p){return '<p>'+p+'</p>'}).join('');
+      nawO.hidden=c.obr.length<2;
       if(!c.obr.length){box.hidden=true;opisO.hidden=true;mini.innerHTML='';if(!pusty.parentNode)scena.appendChild(pusty);}
       else{
         box.hidden=false;opisO.hidden=false;if(pusty.parentNode)pusty.remove();
