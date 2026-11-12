@@ -49,27 +49,56 @@
     var opis=d.getElementById('opis'),ot=d.getElementById('o-t'),ox=d.getElementById('o-x'),licz=d.getElementById('o-licz'),pr=d.getElementById('o-prev'),nx=d.getElementById('o-next'),mini=d.getElementById('miniatury'),scena=d.getElementById('scena');
     var cur=null,i=0,box=d.querySelector('.obraz-box'),opisO=d.querySelector('.opis-obrazu'),nawO=d.getElementById('o-nawig');
     var pusty=d.createElement('p');pusty.className='puste';pusty.textContent='Reprodukcje i opis cyklu Faunofloris zostaną dodane wkrótce.';
+    // podpis lamie sie tylko po kropce konczacej slowo ("Kin 241 IMIX." / "22. 08. 2011"), nigdy wewnatrz daty czy wymiarow
+    function lam(t){return String(t||'').replace(/ /g,' ').replace(/(\p{L}{2,})\. /gu,'$1. ')}
     function rysuj(){
       var c=C[cur],o=c.obr[i];
       img.classList.add('laduje');
-      var n=new Image();n.onload=n.onerror=function(){img.src=n.src;img.width=o.w;img.height=o.h;img.classList.remove('laduje')};n.src='img/o/'+o.f;
+      var n=new Image();n.onload=n.onerror=function(){img.src=n.src;img.width=o.w;img.height=o.h;img.classList.remove('laduje');dopasuj()};n.src='img/o/'+o.f;
       img.alt=(o.t?o.t+', ':'')+'obraz z cyklu '+c.n;
       img.dataset.full='img/o/'+o.f;
-      ot.textContent=o.t||'Tytuł obrazu - do uzupełnienia';ot.classList.toggle('brak',!o.t);
-      ox.textContent=c.x;
+      ot.textContent=o.t?lam(o.t):'Tytuł obrazu - do uzupełnienia';ot.classList.toggle('brak',!o.t);
+      ox.textContent=lam(c.x);
       licz.textContent=(i+1)+' / '+c.obr.length;
       pr.disabled=i===0;nx.disabled=i===c.obr.length-1;
       mini.querySelectorAll('button').forEach(function(b,j){b.setAttribute('aria-current',j===i?'true':'false')});
       var akt=mini.children[i];
       if(akt){var l=akt.offsetLeft-mini.offsetLeft,r=l+akt.offsetWidth;if(l<mini.scrollLeft||r>mini.scrollLeft+mini.clientWidth)mini.scrollTo({left:Math.max(0,l-8),behavior:'smooth'})}
+      dopasuj();
     }
+    // uklad wg uwag 12.11 wieczor (komputer): gorna krawedz obrazu na wysokosci kreski pod logo,
+    // dolna na wysokosci dolnej krawedzi belki "Rysunki", podpis stoi linia pisma na dolnej krawedzi obrazu.
+    // Obraz tylko skalowany proporcjonalnie (bez kadrowania i bez zmiany proporcji).
+    var kreska=d.querySelector('.rule'),kol=scena.parentNode,podp=null;
+    function wyczysc(){scena.classList.remove('dopas');kol.style.marginTop='';box.style.height='';box.style.width='';img.style.width='';img.style.height='';img.style.maxHeight='';opisO.style.marginBottom=''}
+    function dopasuj(){
+      if(!cur)return;var c=C[cur],o=c.obr[i];
+      if(window.innerWidth<900||!o||!kreska){wyczysc();return}
+      var cyki=d.querySelectorAll('.cyk[data-c]'),ost=cyki[cyki.length-1];
+      scena.classList.add('dopas');kol.style.marginTop='0px';opisO.style.marginBottom='0px';
+      var gora=kreska.getBoundingClientRect().top,dol=ost.getBoundingClientRect().bottom,H=Math.round(dol-gora);
+      if(H<200){wyczysc();return}
+      var gap=parseFloat(getComputedStyle(scena).columnGap)||0,maxW=scena.clientWidth-gap-130;
+      var r=o.w/o.h,w=H*r,h=H;if(w>maxW){w=maxW;h=w/r}
+      w=Math.round(w);h=Math.round(w/r);
+      box.style.width=w+'px';box.style.height=H+'px';
+      img.style.maxHeight='none';img.style.width=w+'px';img.style.height=h+'px';
+      kol.style.marginTop=Math.round(gora-box.getBoundingClientRect().top)+'px';
+      if(!podp){podp=d.createElement('span');podp.style.cssText='display:inline-block;width:0;height:0;vertical-align:baseline';podp.setAttribute('aria-hidden','true')}
+      ox.appendChild(podp);
+      var linia=podp.getBoundingClientRect().bottom,dolO=opisO.getBoundingClientRect().bottom;
+      opisO.style.marginBottom=(linia-dolO).toFixed(1)+'px';
+    }
+    var tr;window.addEventListener('resize',function(){clearTimeout(tr);tr=setTimeout(dopasuj,60)});
+    if(d.fonts&&d.fonts.ready)d.fonts.ready.then(dopasuj);
+    window.addEventListener('load',dopasuj);
     function wybierz(k,bezHash){
       if(!C[k])k='prapamiec';cur=k;i=0;var c=C[k];
       d.querySelectorAll('.cyk[data-c]').forEach(function(b){b.setAttribute('aria-selected',b.dataset.c===k?'true':'false')});
       scena.setAttribute('aria-labelledby','tab-'+k);
       opis.innerHTML=c.o.map(function(p){return '<p>'+p+'</p>'}).join('');
       nawO.hidden=c.obr.length<2;
-      if(!c.obr.length){box.hidden=true;opisO.hidden=true;mini.innerHTML='';if(!pusty.parentNode)scena.appendChild(pusty);}
+      if(!c.obr.length){box.hidden=true;opisO.hidden=true;mini.innerHTML='';if(!pusty.parentNode)scena.appendChild(pusty);wyczysc();}
       else{
         box.hidden=false;opisO.hidden=false;if(pusty.parentNode)pusty.remove();
         mini.innerHTML=c.obr.length>1?c.obr.map(function(o,j){return '<button type="button" aria-label="Obraz '+(j+1)+'"><img src="img/o/m/'+o.f+'" alt="" loading="lazy"></button>'}).join(''):'';
