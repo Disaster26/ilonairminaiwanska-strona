@@ -51,10 +51,14 @@
     var pusty=d.createElement('p');pusty.className='puste';pusty.textContent='Reprodukcje i opis cyklu Faunofloris zostaną dodane wkrótce.';
     // podpis lamie sie tylko po kropce konczacej slowo ("Kin 241 IMIX." / "22. 08. 2011"), nigdy wewnatrz daty czy wymiarow
     function lam(t){return String(t||'').replace(/ /g,' ').replace(/(\p{L}{2,})\. /gu,'$1. ')}
+    // Prapamiec: kilka szerokosci WebP (800/1200/oryginal), przegladarka bierze najmniejsza ostra
+    var ROZM='(min-width:900px) 62vw, 100vw';
+    function zestaw(o){if(!o.v)return '';var b='img/o/'+o.f.replace(/\.webp$/,'');return b+'-800.webp 800w, '+b+'-1200.webp 1200w, img/o/'+o.f+' '+o.w+'w'}
     function rysuj(){
       var c=C[cur],o=c.obr[i];
       img.classList.add('laduje');
-      var n=new Image();n.onload=n.onerror=function(){img.src=n.src;img.width=o.w;img.height=o.h;img.classList.remove('laduje');dopasuj()};n.src='img/o/'+o.f;
+      var src='img/o/'+o.f,set=zestaw(o),n=new Image();if(set){n.sizes=ROZM;n.srcset=set}
+      n.onload=n.onerror=function(){if(set){img.sizes=ROZM;img.srcset=set}else{img.removeAttribute('srcset')}img.src=src;img.width=o.w;img.height=o.h;img.classList.remove('laduje');dopasuj()};n.src=src;
       img.alt=(o.t?o.t+', ':'')+'obraz z cyklu '+c.n;
       img.dataset.full='img/o/'+o.f;
       ot.textContent=o.t?lam(o.t):'Tytuł obrazu - do uzupełnienia';ot.classList.toggle('brak',!o.t);
@@ -101,7 +105,7 @@
       if(!c.obr.length){box.hidden=true;opisO.hidden=true;mini.innerHTML='';if(!pusty.parentNode)scena.appendChild(pusty);wyczysc();}
       else{
         box.hidden=false;opisO.hidden=false;if(pusty.parentNode)pusty.remove();
-        mini.innerHTML=c.obr.length>1?c.obr.map(function(o,j){return '<button type="button" aria-label="Obraz '+(j+1)+'"><img src="img/o/m/'+o.f+'" alt="" loading="lazy"></button>'}).join(''):'';
+        mini.innerHTML=c.obr.length>1?c.obr.map(function(o,j){return '<button type="button" aria-label="Obraz '+(j+1)+(o.t?', '+o.t:'')+'"><img src="img/o/m/'+o.f+'" alt="" loading="lazy"'+(o.v?' style="aspect-ratio:'+o.w+'/'+o.h+'"':'')+'></button>'}).join(''):'';
         mini.querySelectorAll('button').forEach(function(b,j){b.addEventListener('click',function(){i=j;rysuj()})});
         rysuj();
       }
