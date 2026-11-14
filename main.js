@@ -123,6 +123,40 @@
     window.addEventListener('hashchange',function(){wybierz(location.hash.slice(1),true)});
   }
 
+  // Prapamiec (14.11 wieczor): wyrownania planszy z miniaturkami i zdjeciem z Janowca
+  var pr=d.querySelector('.prapa'),pg=d.querySelector('.prapa-g');
+  if(pr&&pg){
+    var h1=pg.querySelector('.tytul'),pas=pr.querySelector('.pasek'),lewa=pr.querySelector('.prapa-lewa'),jan=pr.querySelector('.janowiec img'),
+        tek=pr.querySelector('.prapa-tekst'),cyt=tek.querySelector('.cytat-s'),tz=tek.querySelector('.tzolkin'),tzi=tz&&tz.querySelector('img'),
+        cv=d.createElement('canvas').getContext('2d');
+    var uklad=function(){
+      h1.style.fontSize='';cyt.style.marginTop='';tek.style.paddingBottom='';if(tzi){tzi.style.height='';tzi.style.width=''}
+      if(window.innerWidth<900)return;
+      // 1. prawa krawedz tytulu = prawa krawedz miniaturek
+      var rg=d.createRange();rg.selectNodeContents(h1);
+      for(var k=0;k<4;k++){var r=rg.getBoundingClientRect(),cel=pas.getBoundingClientRect().right-r.left;if(Math.abs(cel-r.width)<.3)break;
+        h1.style.fontSize=(parseFloat(getComputedStyle(h1).fontSize)*cel/r.width)+'px'}
+      // 2. gora liter pierwszego tekstu = gora miniaturek
+      var cs=getComputedStyle(cyt);cv.font=cs.fontStyle+' '+cs.fontWeight+' '+cs.fontSize+' '+cs.fontFamily;
+      var m=cv.measureText('P'),lh=parseFloat(cs.lineHeight);
+      if(m.fontBoundingBoxAscent){var cap=(lh-(m.fontBoundingBoxAscent+m.fontBoundingBoxDescent))/2+m.fontBoundingBoxAscent-m.actualBoundingBoxAscent;
+        cyt.style.marginTop=(pas.getBoundingClientRect().top-cyt.getBoundingClientRect().top-cap)+'px'}
+      // 3. dol Tzolkina = dol zdjecia z Janowca
+      if(tzi&&jan){
+        tek.style.paddingBottom=Math.max(0,lewa.getBoundingClientRect().bottom-jan.getBoundingClientRect().bottom)+'px';
+        tzi.style.height='0px';
+        var wys=tz.getBoundingClientRect().height,szer=tz.clientWidth,prop=tzi.getAttribute('width')/tzi.getAttribute('height');
+        if(wys<160){tzi.style.height='';return}
+        var hh=Math.min(wys,szer/prop);tzi.style.height=hh+'px';tzi.style.width=(hh*prop)+'px';
+      }
+    };
+    var tm=null,plan=function(){clearTimeout(tm);tm=setTimeout(uklad,60)};
+    uklad();
+    if(d.fonts&&d.fonts.ready)d.fonts.ready.then(uklad);
+    window.addEventListener('load',uklad);
+    window.addEventListener('resize',plan);
+  }
+
   // formularz pokazowy
   var f=d.getElementById('formularz');
   if(f)f.addEventListener('submit',function(e){e.preventDefault();d.getElementById('info').textContent='To wersja testowa strony - na gotowej stronie wiadomość trafi na adres iii@ilonairminaiwanska.pl.'});

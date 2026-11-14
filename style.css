@@ -139,6 +139,17 @@ p{margin:0 0 1em}
 .kotwicka{font:italic 400 clamp(17px,1.22vw,23px)/1.42 var(--serif);margin:1.5em 0 0;max-width:31em}
 .kotwicka cite{display:block;text-align:right;font-style:italic;margin-top:.2em}
 .prapa-tekst .bar{margin-top:clamp(24px,2.2vw,40px);max-width:none;margin-right:calc(var(--pad) * -1);width:calc(100% + var(--pad))}
+/* 14.11 wieczor: tytul konczy sie z miniaturkami, "Cykl 52..." dolna linia na linii bazowej tytulu, teksty od gory miniaturek, Tzolkin dolem rowno ze zdjeciem z Janowca (dokladne wymiary liczy main.js) */
+.tzolkin button{display:block;padding:0;border:0;background:none;cursor:zoom-in;line-height:0}
+.tzolkin img{display:block;width:100%;height:auto}
+@media (min-width:900px){
+  .glowa.prapa-g{display:grid;grid-template-columns:minmax(0,55fr) minmax(0,45fr);column-gap:clamp(28px,3vw,60px);row-gap:0;align-items:last baseline}
+  .glowa.prapa-g .tytul{white-space:nowrap}
+  .glowa.prapa-g p{max-width:31em}
+  .prapa-tekst{align-self:stretch;display:flex;flex-direction:column}
+  .tzolkin{flex:1 1 auto;display:flex;align-items:flex-end;margin-top:clamp(24px,2.2vw,40px);min-height:0}
+  .tzolkin img{width:auto;max-width:100%}
+}
 @media (max-width:899px){
   .prapa{grid-template-columns:minmax(0,1fr);gap:0}
   .prapa-lewa,.prapa-tekst{display:contents}
@@ -148,6 +159,7 @@ p{margin:0 0 1em}
   .janowiec{order:4}
   .kotwicka{order:5}
   .prapa-tekst .bar{order:6}
+  .tzolkin{order:7;margin-top:22px}
 }
 
 /* ---------- Obrazy ---------- */
