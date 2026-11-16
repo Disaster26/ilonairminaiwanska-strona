@@ -16,7 +16,7 @@
   var lb=d.getElementById('lb'),lbi=d.getElementById('lb-img');
   function pokaz(src,alt){if(!lb)return;lbi.src=src;lbi.alt=alt||'';if(lb.showModal&&!lb.open)lb.showModal();}
   d.addEventListener('click',function(e){var t=e.target.closest('[data-full]');if(!t)return;e.preventDefault();pokaz(t.getAttribute('data-full'),(t.querySelector('img')||{}).alt||t.getAttribute('aria-label'))});
-  if(lb){d.getElementById('lb-x').addEventListener('click',function(){lb.close()});lb.addEventListener('click',function(e){if(e.target!==lbi)lb.close()});}
+  if(lb){d.getElementById('lb-x').addEventListener('click',function(){lb.close()});lb.addEventListener('click',function(e){if(e.target!==lbi&&!e.target.closest('.lb-nav'))lb.close()});}
   d.addEventListener('keydown',function(e){if(e.key==='Escape')zamknij()});
 
   // karuzele: palec, mysz, strzalki, licznik
@@ -83,9 +83,9 @@
       var gora=kreska.getBoundingClientRect().top,dol=ost.getBoundingClientRect().bottom,H=Math.round(dol-gora);
       if(H<200){wyczysc();return}
       var gap=parseFloat(getComputedStyle(scena).columnGap)||0,maxW=scena.clientWidth-gap-130;
-      var r=o.w/o.h,w=H*r,h=H;if(w>maxW){w=maxW;h=w/r}
+      var kolW=Math.round(Math.min(maxW,H*1.42)),r=o.w/o.h,w=H*r,h=H;if(w>kolW){w=kolW;h=w/r}
       w=Math.round(w);h=Math.round(w/r);
-      box.style.width=w+'px';box.style.height=H+'px';
+      box.style.width=kolW+'px';box.style.height=H+'px';
       img.style.maxHeight='none';img.style.width=w+'px';img.style.height=h+'px';
       kol.style.marginTop=Math.round(gora-box.getBoundingClientRect().top)+'px';
       if(!podp){podp=d.createElement('span');podp.style.cssText='display:inline-block;width:0;height:0;vertical-align:baseline';podp.setAttribute('aria-hidden','true')}
@@ -115,7 +115,23 @@
       if(window.innerWidth<900){var y=scena.getBoundingClientRect().top+window.scrollY-90;window.scrollTo({top:y,behavior:'smooth'})}})});
     pr.addEventListener('click',function(){if(i>0){i--;rysuj()}});
     nx.addEventListener('click',function(){if(i<C[cur].obr.length-1){i++;rysuj()}});
-    d.addEventListener('keydown',function(e){if(lb&&lb.open)return;if(e.target.closest('input,textarea,select'))return;if(e.key==='ArrowRight')nx.click();if(e.key==='ArrowLeft')pr.click()});
+    d.addEventListener('keydown',function(e){if(lb&&lb.open){if(lb.dataset.gal){if(e.key==='ArrowRight'){e.preventDefault();lbKrok(1)}if(e.key==='ArrowLeft'){e.preventDefault();lbKrok(-1)}}return;}if(e.target.closest('input,textarea,select'))return;if(e.key==='ArrowRight')nx.click();if(e.key==='ArrowLeft')pr.click()});
+    // lightbox galerii: strzalki i licznik w stalym miejscu na dole ekranu (16.11)
+    var lbNav=null,lbL=null;
+    if(lb){
+      lbNav=d.createElement('div');lbNav.className='lb-nav';lbNav.hidden=true;
+      lbNav.innerHTML='<button type="button" data-k="-1" aria-label="Poprzedni obraz"><svg viewBox="0 0 16 16"><path d="M10.5 2.5L5 8l5.5 5.5"/></svg></button><span class="licz"></span><button type="button" data-k="1" aria-label="Następny obraz"><svg viewBox="0 0 16 16"><path d="M5.5 2.5L11 8l-5.5 5.5"/></svg></button>';
+      lb.querySelector('.lb-in').appendChild(lbNav);lbL=lbNav.querySelector('.licz');
+      lbNav.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){lbKrok(+b.dataset.k)})});
+      lb.addEventListener('close',function(){delete lb.dataset.gal;lbNav.hidden=true});
+    }
+    function lbStan(){var c=C[cur],o=c.obr[i];lbi.src='img/o/'+o.f;lbi.alt=img.alt;lbL.textContent=(i+1)+' / '+c.obr.length;
+      lbNav.querySelector('[data-k="-1"]').disabled=i===0;lbNav.querySelector('[data-k="1"]').disabled=i===c.obr.length-1}
+    function lbKrok(k){var n=i+k;if(n<0||n>=C[cur].obr.length)return;i=n;rysuj();lbStan()}
+    img.addEventListener('click',function(){if(!lb||C[cur].obr.length<2)return;setTimeout(function(){if(!lb.open)return;lb.dataset.gal='1';lbNav.hidden=false;lbStan()},0)});
+    var lx=null;
+    if(lb){lbi.addEventListener('touchstart',function(e){lx=e.touches[0].clientX},{passive:true});
+      lbi.addEventListener('touchend',function(e){if(lx===null||!lb.dataset.gal)return;var dx=e.changedTouches[0].clientX-lx;lx=null;if(Math.abs(dx)>40)lbKrok(dx<0?1:-1)});}
     var tx=null;
     img.addEventListener('touchstart',function(e){tx=e.touches[0].clientX},{passive:true});
     img.addEventListener('touchend',function(e){if(tx===null)return;var dx=e.changedTouches[0].clientX-tx;tx=null;if(Math.abs(dx)>40){(dx<0?nx:pr).click()}});

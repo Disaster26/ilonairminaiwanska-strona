@@ -199,12 +199,12 @@ p{margin:0 0 1em}
 .miniatury button[aria-current="true"]{box-shadow:0 0 0 1px #231f20}
 .miniatury button:hover{opacity:.85}
 .miniatury img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
-.scena .nawig{margin:0;align-self:center;gap:4px;font:400 clamp(17px,1.22vw,23px)/1 var(--serif);color:var(--ink)}
+.scena .nawig{display:flex;flex-wrap:nowrap;align-items:center;white-space:nowrap;margin:0;align-self:center;gap:2px;font:400 clamp(17px,1.22vw,23px)/1 var(--serif);color:var(--ink)}
 .scena .nawig button{width:34px;height:34px;border:0;background:none}
 .scena .nawig button:hover{background:none}
 .scena .nawig button:hover svg{stroke:#231f20}
 .scena .nawig svg{fill:none;stroke:#8d9196;stroke-width:1.3}
-.scena .nawig .licz{min-width:4.2em}
+.scena .nawig .licz{display:inline-block;min-width:3.9em;text-align:center;font-variant-numeric:tabular-nums}
 .scena .puste{grid-column:1/-1}
 .scena [hidden]{display:none!important}
 .puste{max-width:520px;align-self:center;font:italic 400 clamp(18px,1.3vw,24px)/1.45 var(--serif);color:var(--szary);padding:40px 0}
@@ -222,7 +222,7 @@ p{margin:0 0 1em}
   .opis-obrazu .x{white-space:normal}
   .scena .nawig{font-size:15.5px}
   .scena .nawig button{width:30px;height:40px}
-  .scena .nawig .licz{min-width:3.6em}
+  .scena .nawig .licz{min-width:4.4em}
   .cykle-lista{display:contents}
   .cykle-lista>*{order:0}
   .obrazy>div:last-child{order:5;margin-top:26px}
@@ -354,3 +354,18 @@ p{margin:0 0 1em}
 .wylinka-badge:hover .wy-pod,.wylinka-badge:focus-visible .wy-pod{opacity:1}
 @media (prefers-reduced-motion:reduce){.wylinka-badge .wy-old,.wylinka-badge .wy-pod{transition:none}.wylinka-badge:hover .wy-old,.wylinka-badge:focus-visible .wy-old{transform:none;opacity:.45}.wylinka-badge:hover .wy-pod,.wylinka-badge:focus-visible .wy-pod{opacity:0}}
 @media (min-width:760px) and (max-width:1179px) and (max-aspect-ratio:1/1){.hero-foto img{object-position:88% 50%}}
+
+/* 16.11: licznik i strzalki zawsze w tym samym miejscu (stala kolumna obrazu, obraz dosuniety do podpisu) */
+@media (min-width:900px){.scena.dopas .obraz-box{justify-content:flex-end}}
+@media (max-width:899px){
+  .obraz-box{height:52svh;align-items:center}
+  .obraz-box img{max-height:100%}
+  .opis-obrazu{min-height:calc(2 * 1.35em)}
+}
+.lb-nav{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;padding:4px 8px;background:rgba(255,255,255,.92);border:1px solid #dfe3e6;font:400 18px/1 var(--serif);color:var(--ink)}
+.lb-nav[hidden]{display:none}
+.lb-nav button{width:44px;height:44px;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+.lb-nav button:disabled{opacity:.3;cursor:default}
+.lb-nav svg{width:18px;height:18px;fill:none;stroke:#444;stroke-width:1.4}
+.lb-nav .licz{display:inline-block;min-width:4.6em;text-align:center;font-variant-numeric:tabular-nums}
+.lb[data-gal] img{max-height:calc(86vh - 50px)}
