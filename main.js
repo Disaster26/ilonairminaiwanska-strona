@@ -49,8 +49,8 @@
     var opis=d.getElementById('opis'),ot=d.getElementById('o-t'),ox=d.getElementById('o-x'),licz=d.getElementById('o-licz'),pr=d.getElementById('o-prev'),nx=d.getElementById('o-next'),mini=d.getElementById('miniatury'),scena=d.getElementById('scena');
     var cur=null,i=0,box=d.querySelector('.obraz-box'),opisO=d.querySelector('.opis-obrazu'),nawO=d.getElementById('o-nawig');
     var pusty=d.createElement('p');pusty.className='puste';pusty.textContent='Reprodukcje i opis cyklu Faunofloris zostaną dodane wkrótce.';
-    // podpis lamie sie tylko po kropce konczacej slowo ("Kin 241 IMIX." / "22. 08. 2011"), nigdy wewnatrz daty czy wymiarow
-    function lam(t){return String(t||'').replace(/ /g,' ').replace(/(\p{L}{2,})\. /gu,'$1. ')}
+    // podpis: twarda spacja tylko w datach, wymiarach i numerze Kin (nigdy wewnatrz daty), tytuly zawijaja sie normalnie w kolumnie
+    function lam(t){return String(t||'').replace(/(\d\.?) (?=\d)/g,'$1\u00a0').replace(/(\d) x (?=\d)/g,'$1\u00a0x\u00a0').replace(/(\d) (?=cm\b)/g,'$1\u00a0').replace(/\bKin (\d+) (?=\p{Lu}{2,})/gu,'Kin\u00a0$1\u00a0')}
     // Prapamiec: kilka szerokosci WebP (800/1200/oryginal), przegladarka bierze najmniejsza ostra
     var ROZM='(min-width:900px) 62vw, 100vw';
     function zestaw(o){if(!o.v)return '';var b='img/o/'+o.f.replace(/\.webp$/,'');return (o.s||[800,1200]).map(function(s){return b+'-'+s+'.webp '+s+'w, '}).join('')+'img/o/'+o.f+' '+o.w+'w'}
@@ -74,14 +74,19 @@
     // dolna na wysokosci dolnej krawedzi belki "Rysunki", podpis stoi linia pisma na dolnej krawedzi obrazu.
     // Obraz tylko skalowany proporcjonalnie (bez kadrowania i bez zmiany proporcji).
     var kreska=d.querySelector('.rule'),kol=scena.parentNode,podp=null;
-    function wyczysc(){scena.classList.remove('dopas');kol.style.marginTop='';box.style.height='';box.style.width='';img.style.width='';img.style.height='';img.style.maxHeight='';opisO.style.marginBottom=''}
+    function wyczysc(){scena.classList.remove('dopas');kol.style.marginTop='';box.style.height='';box.style.width='';img.style.width='';img.style.height='';img.style.maxHeight='';opisO.style.marginBottom='';opisO.style.maxHeight=''}
     function dopasuj(){
       if(!cur)return;var c=C[cur],o=c.obr[i];
       if(window.innerWidth<900||!o||!kreska){wyczysc();return}
       var cyki=d.querySelectorAll('.cyk[data-c]'),ost=cyki[cyki.length-1];
       scena.classList.add('dopas');kol.style.marginTop='0px';opisO.style.marginBottom='0px';
       var gora=kreska.getBoundingClientRect().top,dol=ost.getBoundingClientRect().bottom,H=Math.round(dol-gora);
+      // 16.11 wieczor: obraz nie wyzszy niz pozwala okno, zeby miniatury i licznik zmiescily sie pod nim bez przewijania
+      var rg=parseFloat(getComputedStyle(scena).rowGap)||0,dolPas=Math.max(mini.offsetHeight,nawO.hidden?0:nawO.offsetHeight);
+      var wolne=Math.floor(window.innerHeight-(gora+window.scrollY)-(dolPas?rg+dolPas:0)-Math.max(12,window.innerHeight*.022));
+      H=Math.min(H,wolne);
       if(H<200){wyczysc();return}
+      opisO.style.maxHeight=H+'px';
       var gap=parseFloat(getComputedStyle(scena).columnGap)||0,maxW=scena.clientWidth-gap-130;
       var kolW=Math.round(Math.min(maxW,H*1.42)),r=o.w/o.h,w=H*r,h=H;if(w>kolW){w=kolW;h=w/r}
       w=Math.round(w);h=Math.round(w/r);

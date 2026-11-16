@@ -369,3 +369,23 @@ p{margin:0 0 1em}
 .lb-nav svg{width:18px;height:18px;fill:none;stroke:#444;stroke-width:1.4}
 .lb-nav .licz{display:inline-block;min-width:4.6em;text-align:center;font-variant-numeric:tabular-nums}
 .lb[data-gal] img{max-height:calc(86vh - 50px)}
+
+/* 16.11 wieczor: plansza galerii (Prapamiec, Metamorfozy...) miesci sie w calosci w oknie laptopa:
+   wysokosc obrazu liczy main.js z wysokosci okna (logo, panel, obraz, miniatury i licznik bez przewijania) */
+@media (min-width:900px){
+  .miniatury{--mh:clamp(54px,min(10.5vh,6.2vw),130px)}
+  .miniatury button{width:auto;height:var(--mh)}
+  .miniatury img{height:100%;width:auto}
+  .scena.dopas{grid-template-columns:auto minmax(170px,1fr)}
+  .opis-obrazu{overflow-wrap:break-word;overflow-y:auto;scrollbar-width:thin}
+}
+@media (min-width:900px) and (max-height:980px){
+  body.s-obrazy{--hdr:clamp(70px,min(9.3vw,13vh),168px)}
+  .s-obrazy .logo svg{height:clamp(52px,min(7.2vw,10.6vh),136px)}
+  .s-obrazy .tytul{font-size:clamp(40px,min(5.4vw,8vh),104px)}
+  .s-obrazy .grupa-t{font-size:clamp(17px,min(1.45vw,2.8vh),27px);margin:clamp(8px,1.5vh,26px) 0 clamp(6px,1vh,16px)}
+  .s-obrazy .grupa-t.pierwsza{margin-top:.2em;margin-bottom:clamp(8px,1.3vh,24px)}
+  .s-obrazy .cykle{gap:clamp(6px,1vh,14px)}
+  .s-obrazy .cyk{min-height:clamp(30px,4.5vh,42px);font-size:clamp(16px,min(1.4vw,2.8vh),26px)}
+  .s-obrazy .cyk-opis{font-size:clamp(15px,min(1.22vw,2.35vh),23px);margin-top:clamp(10px,1.8vh,30px)}
+}
