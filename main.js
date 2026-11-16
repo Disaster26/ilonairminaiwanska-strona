@@ -53,7 +53,7 @@
     function lam(t){return String(t||'').replace(/ /g,' ').replace(/(\p{L}{2,})\. /gu,'$1. ')}
     // Prapamiec: kilka szerokosci WebP (800/1200/oryginal), przegladarka bierze najmniejsza ostra
     var ROZM='(min-width:900px) 62vw, 100vw';
-    function zestaw(o){if(!o.v)return '';var b='img/o/'+o.f.replace(/\.webp$/,'');return b+'-800.webp 800w, '+b+'-1200.webp 1200w, img/o/'+o.f+' '+o.w+'w'}
+    function zestaw(o){if(!o.v)return '';var b='img/o/'+o.f.replace(/\.webp$/,'');return (o.s||[800,1200]).map(function(s){return b+'-'+s+'.webp '+s+'w, '}).join('')+'img/o/'+o.f+' '+o.w+'w'}
     function rysuj(){
       var c=C[cur],o=c.obr[i];
       img.classList.add('laduje');
@@ -62,7 +62,7 @@
       img.alt=(o.t?o.t+', ':'')+'obraz z cyklu '+c.n;
       img.dataset.full='img/o/'+o.f;
       ot.textContent=o.t?lam(o.t):'Tytuł obrazu - do uzupełnienia';ot.classList.toggle('brak',!o.t);
-      ox.textContent=lam(c.x);
+      ox.textContent=lam(o.x||c.x);
       licz.textContent=(i+1)+' / '+c.obr.length;
       pr.disabled=i===0;nx.disabled=i===c.obr.length-1;
       mini.querySelectorAll('button').forEach(function(b,j){b.setAttribute('aria-current',j===i?'true':'false')});
@@ -124,10 +124,10 @@
   }
 
   // Prapamiec (14.11 wieczor): wyrownania planszy z miniaturkami i zdjeciem z Janowca
-  var pr=d.querySelector('.prapa'),pg=d.querySelector('.prapa-g');
-  if(pr&&pg){
-    var h1=pg.querySelector('.tytul'),pas=pr.querySelector('.pasek'),lewa=pr.querySelector('.prapa-lewa'),jan=pr.querySelector('.janowiec img'),
-        tek=pr.querySelector('.prapa-tekst'),cyt=tek.querySelector('.cytat-s'),tz=tek.querySelector('.tzolkin'),tzi=tz&&tz.querySelector('img'),
+  var prA=d.querySelector('.prapa'),pg=d.querySelector('.prapa-g');
+  if(prA&&pg){
+    var h1=pg.querySelector('.tytul'),pas=prA.querySelector('.pasek'),lewa=prA.querySelector('.prapa-lewa'),jan=prA.querySelector('.janowiec img'),
+        tek=prA.querySelector('.prapa-tekst'),cyt=tek.querySelector('.cytat-s'),tz=tek.querySelector('.tzolkin'),tzi=tz&&tz.querySelector('img'),
         cv=d.createElement('canvas').getContext('2d');
     var uklad=function(){
       h1.style.fontSize='';cyt.style.marginTop='';tek.style.paddingBottom='';if(tzi){tzi.style.height='';tzi.style.width=''}
