@@ -48,7 +48,7 @@
   if(C&&img){
     var opis=d.getElementById('opis'),ot=d.getElementById('o-t'),ox=d.getElementById('o-x'),licz=d.getElementById('o-licz'),pr=d.getElementById('o-prev'),nx=d.getElementById('o-next'),mini=d.getElementById('miniatury'),scena=d.getElementById('scena');
     var cur=null,i=0,box=d.querySelector('.obraz-box'),opisO=d.querySelector('.opis-obrazu'),nawO=d.getElementById('o-nawig');
-    var pusty=d.createElement('p');pusty.className='puste';pusty.textContent='Reprodukcje i opis cyklu Faunofloris zostaną dodane wkrótce.';
+    var pusty=d.createElement('p');pusty.className='puste';
     // podpis: twarda spacja tylko w datach, wymiarach i numerze Kin (nigdy wewnatrz daty), tytuly zawijaja sie normalnie w kolumnie
     function lam(t){return String(t||'').replace(/(\d\.?) (?=\d)/g,'$1\u00a0').replace(/(\d) x (?=\d)/g,'$1\u00a0x\u00a0').replace(/(\d) (?=cm\b)/g,'$1\u00a0').replace(/\bKin (\d+) (?=\p{Lu}{2,})/gu,'Kin\u00a0$1\u00a0')}
     // Prapamiec: kilka szerokosci WebP (800/1200/oryginal), przegladarka bierze najmniejsza ostra
@@ -102,12 +102,12 @@
     if(d.fonts&&d.fonts.ready)d.fonts.ready.then(dopasuj);
     window.addEventListener('load',dopasuj);
     function wybierz(k,bezHash){
-      if(!C[k])k='prapamiec';cur=k;i=0;var c=C[k];
+      if(k==='daleko')k='ksiega';if(!C[k])k='prapamiec';cur=k;i=0;var c=C[k];
       d.querySelectorAll('.cyk[data-c]').forEach(function(b){b.setAttribute('aria-selected',b.dataset.c===k?'true':'false')});
       scena.setAttribute('aria-labelledby','tab-'+k);
       opis.innerHTML=c.o.map(function(p){return '<p>'+p+'</p>'}).join('');
       nawO.hidden=c.obr.length<2;
-      if(!c.obr.length){box.hidden=true;opisO.hidden=true;mini.innerHTML='';if(!pusty.parentNode)scena.appendChild(pusty);wyczysc();}
+      if(!c.obr.length){box.hidden=true;opisO.hidden=true;mini.innerHTML='';pusty.textContent='Reprodukcje cyklu '+c.n+' zostaną dodane wkrótce.';if(!pusty.parentNode)scena.appendChild(pusty);wyczysc();}
       else{
         box.hidden=false;opisO.hidden=false;if(pusty.parentNode)pusty.remove();
         mini.innerHTML=c.obr.length>1?c.obr.map(function(o,j){return '<button type="button" aria-label="Obraz '+(j+1)+(o.t?', '+o.t:'')+'"><img src="img/o/m/'+o.f+'" alt="" loading="lazy"'+(o.v?' style="aspect-ratio:'+o.w+'/'+o.h+'"':'')+'></button>'}).join(''):'';
