@@ -68,7 +68,7 @@
       mini.querySelectorAll('button').forEach(function(b,j){b.setAttribute('aria-current',j===i?'true':'false')});
       dopasuj();
       var akt=mini.children[i];
-      if(akt&&!mOn){var l=akt.offsetLeft-mini.offsetLeft,r=l+akt.offsetWidth;if(l<mini.scrollLeft||r>mini.scrollLeft+mini.clientWidth)mini.scrollTo({left:Math.max(0,l-8),behavior:'smooth'})}
+      if(akt&&!mOn){var l=akt.offsetLeft-mini.children[0].offsetLeft,r=l+akt.offsetWidth,vw=mini.clientWidth-4;if(l<mini.scrollLeft-1)mini.scrollTo({left:l,behavior:'smooth'});else if(r>mini.scrollLeft+vw+1)mini.scrollTo({left:r-vw,behavior:'smooth'})}
     }
     // uklad wg uwag 12.11 wieczor (komputer): gorna krawedz obrazu na wysokosci kreski pod logo,
     // dolna na wysokosci dolnej krawedzi belki "Rysunki", podpis stoi linia pisma na dolnej krawedzi obrazu.
@@ -102,14 +102,28 @@
     // 18.11: przy miniaturach o roznych proporcjach (Metamorfozy, Genesis, Faunofloris) pasek pokazuje tylko cale miniatury
     // i konczy sie rowno z prawa krawedzia duzego obrazu, jak w Prapamieci (pasek dosuniety do prawej, takze przy przewijaniu)
     var ms=0,msPop=-1,mOn=false;
-    function pasekReset(){mOn=false;msPop=-1;mini.style.width='';mini.style.minWidth='';mini.style.marginLeft='';mini.style.marginRight='';mini.style.scrollPaddingLeft=''}
+    function pasekStyl(){mini.classList.remove('rowne');mini.style.removeProperty('--tw');mini.style.width='';mini.style.minWidth='';mini.style.marginLeft='';mini.style.marginRight='';mini.style.scrollPaddingLeft=''}
+    function pasekReset(){mOn=false;msPop=-1;pasekStyl()}
     function pasek(wolny){
       var bs=mini.children;
       if(!scena.classList.contains('dopas')||bs.length<2){pasekReset();return}
+      pasekStyl();
       var x=[],w=[],x0=bs[0].getBoundingClientRect().left,mn=1e9,mx=0,j,rr;
       for(j=0;j<bs.length;j++){rr=bs[j].getBoundingClientRect();x.push(rr.left-x0);w.push(rr.width);mn=Math.min(mn,w[j]);mx=Math.max(mx,w[j])}
-      if(mx-mn<3){pasekReset();return}
       var W=box.getBoundingClientRect().width-4;
+      // 18.11 wieczor: miniatury rownej szerokosci (Prapamiec) - szerokosc miniatury lekko dobrana tak, zeby w szerokosci
+      // duzego obrazu miescila sie calkowita liczba miniatur: pierwsza i ostatnia widoczna sa cale, pasek konczy sie rowno z prawa krawedzia
+      if(mx-mn<3){
+        var g=parseFloat(getComputedStyle(mini).columnGap)||0,Wr=W+4,n=Math.max(1,Math.min(bs.length,Math.round((Wr+g)/(mn+g))));
+        var tw=(Wr-(n-1)*g)/n;if(bs.length<=n)tw=Math.min(tw,mn*1.15);
+        mOn=true;mini.classList.add('rowne');mini.style.setProperty('--tw',tw.toFixed(3)+'px');
+        mini.style.minWidth='0';mini.style.width=(Wr+4)+'px';mini.style.marginLeft='-2px';mini.style.marginRight='-2px';mini.style.scrollPaddingLeft='2px';
+        if(ms>bs.length-n)ms=Math.max(0,bs.length-n);
+        if(!wolny){if(i<ms)ms=i;else if(i>ms+n-1)ms=i-n+1}
+        var sl=ms*(tw+g);
+        if(Math.abs(mini.scrollLeft-sl)>1)mini.scrollTo({left:sl,behavior:(msPop>=0&&msPop!==ms&&!wolny)?'smooth':'auto'});
+        msPop=ms;return
+      }
       function kon(s){var e=s;while(e+1<bs.length&&x[e+1]+w[e+1]-x[s]<=W)e++;return e}
       if(ms>=bs.length)ms=0;
       if(!wolny){var e0=kon(ms);if(i<ms)ms=i;else if(i>e0){ms=i;while(ms>0&&x[i]+w[i]-x[ms-1]<=W)ms--}}

@@ -389,3 +389,5 @@ p{margin:0 0 1em}
   .s-obrazy .cyk{min-height:clamp(30px,4.5vh,42px);font-size:clamp(16px,min(1.4vw,2.8vh),26px)}
   .s-obrazy .cyk-opis{font-size:clamp(15px,min(1.22vw,2.35vh),23px);margin-top:clamp(10px,1.8vh,30px)}
 }
+/* 18.11 wieczor: Prapamiec - szerokosc miniatur dobiera main.js (calkowita liczba miniatur w szerokosci obrazu) */
+@media (min-width:900px){.miniatury.rowne button{width:var(--tw)}.miniatury.rowne img{width:100%}}
