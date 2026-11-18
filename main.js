@@ -66,15 +66,15 @@
       licz.textContent=(i+1)+' / '+c.obr.length;
       pr.disabled=i===0;nx.disabled=i===c.obr.length-1;
       mini.querySelectorAll('button').forEach(function(b,j){b.setAttribute('aria-current',j===i?'true':'false')});
-      var akt=mini.children[i];
-      if(akt){var l=akt.offsetLeft-mini.offsetLeft,r=l+akt.offsetWidth;if(l<mini.scrollLeft||r>mini.scrollLeft+mini.clientWidth)mini.scrollTo({left:Math.max(0,l-8),behavior:'smooth'})}
       dopasuj();
+      var akt=mini.children[i];
+      if(akt&&!mOn){var l=akt.offsetLeft-mini.offsetLeft,r=l+akt.offsetWidth;if(l<mini.scrollLeft||r>mini.scrollLeft+mini.clientWidth)mini.scrollTo({left:Math.max(0,l-8),behavior:'smooth'})}
     }
     // uklad wg uwag 12.11 wieczor (komputer): gorna krawedz obrazu na wysokosci kreski pod logo,
     // dolna na wysokosci dolnej krawedzi belki "Rysunki", podpis stoi linia pisma na dolnej krawedzi obrazu.
     // Obraz tylko skalowany proporcjonalnie (bez kadrowania i bez zmiany proporcji).
     var kreska=d.querySelector('.rule'),kol=scena.parentNode,podp=null;
-    function wyczysc(){scena.classList.remove('dopas');kol.style.marginTop='';box.style.height='';box.style.width='';img.style.width='';img.style.height='';img.style.maxHeight='';opisO.style.marginBottom='';opisO.style.maxHeight=''}
+    function wyczysc(){pasekReset();scena.classList.remove('dopas');kol.style.marginTop='';box.style.height='';box.style.width='';img.style.width='';img.style.height='';img.style.maxHeight='';opisO.style.marginBottom='';opisO.style.maxHeight=''}
     function dopasuj(){
       if(!cur)return;var c=C[cur],o=c.obr[i];
       if(window.innerWidth<900||!o||!kreska){wyczysc();return}
@@ -97,12 +97,36 @@
       ox.appendChild(podp);
       var linia=podp.getBoundingClientRect().bottom,dolO=opisO.getBoundingClientRect().bottom;
       opisO.style.marginBottom=(linia-dolO).toFixed(1)+'px';
+      pasek();
     }
+    // 18.11: przy miniaturach o roznych proporcjach (Metamorfozy, Genesis, Faunofloris) pasek pokazuje tylko cale miniatury
+    // i konczy sie rowno z prawa krawedzia duzego obrazu, jak w Prapamieci (pasek dosuniety do prawej, takze przy przewijaniu)
+    var ms=0,msPop=-1,mOn=false;
+    function pasekReset(){mOn=false;msPop=-1;mini.style.width='';mini.style.minWidth='';mini.style.marginLeft='';mini.style.marginRight='';mini.style.scrollPaddingLeft=''}
+    function pasek(wolny){
+      var bs=mini.children;
+      if(!scena.classList.contains('dopas')||bs.length<2){pasekReset();return}
+      var x=[],w=[],x0=bs[0].getBoundingClientRect().left,mn=1e9,mx=0,j,rr;
+      for(j=0;j<bs.length;j++){rr=bs[j].getBoundingClientRect();x.push(rr.left-x0);w.push(rr.width);mn=Math.min(mn,w[j]);mx=Math.max(mx,w[j])}
+      if(mx-mn<3){pasekReset();return}
+      var W=box.getBoundingClientRect().width-4;
+      function kon(s){var e=s;while(e+1<bs.length&&x[e+1]+w[e+1]-x[s]<=W)e++;return e}
+      if(ms>=bs.length)ms=0;
+      if(!wolny){var e0=kon(ms);if(i<ms)ms=i;else if(i>e0){ms=i;while(ms>0&&x[i]+w[i]-x[ms-1]<=W)ms--}}
+      var e=kon(ms);
+      mOn=true;mini.style.minWidth='0';mini.style.width=(x[e]+w[e]-x[ms]+4).toFixed(2)+'px';mini.style.marginLeft='auto';mini.style.marginRight='-2px';mini.style.scrollPaddingLeft='2px';
+      if(Math.abs(mini.scrollLeft-x[ms])>1)mini.scrollTo({left:x[ms],behavior:(msPop>=0&&msPop!==ms&&!wolny)?'smooth':'auto'});
+      msPop=ms;
+    }
+    // przewiniecie paska palcem/gladzikiem: pasek dociaga sie do najblizszej calej miniatury
+    mini.addEventListener('scrollend',function(){if(!mOn)return;var bs=mini.children,x0=bs[0].offsetLeft,b=0,bd=1e9;
+      for(var j=0;j<bs.length;j++){var dd=Math.abs(bs[j].offsetLeft-x0-mini.scrollLeft);if(dd<bd){bd=dd;b=j}}
+      if(b!==ms){ms=b;pasek(true)}});
     var tr;window.addEventListener('resize',function(){clearTimeout(tr);tr=setTimeout(dopasuj,60)});
     if(d.fonts&&d.fonts.ready)d.fonts.ready.then(dopasuj);
     window.addEventListener('load',dopasuj);
     function wybierz(k,bezHash){
-      if(k==='daleko')k='ksiega';if(!C[k])k='prapamiec';cur=k;i=0;var c=C[k];
+      if(k==='daleko')k='ksiega';if(!C[k])k='prapamiec';cur=k;i=0;ms=0;msPop=-1;var c=C[k];
       d.querySelectorAll('.cyk[data-c]').forEach(function(b){b.setAttribute('aria-selected',b.dataset.c===k?'true':'false')});
       scena.setAttribute('aria-labelledby','tab-'+k);
       opis.innerHTML=c.o.map(function(p){return '<p>'+p+'</p>'}).join('');
