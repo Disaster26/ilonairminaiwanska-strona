@@ -46,15 +46,15 @@
 <div class="rule" aria-hidden="true"></div>
 <main id="tresc">
 <div class="strona strona-top">
-  <div class="glowa"><h1 class="tytul">Wystawy</h1><p>Wernisaże w galeriach, na zamkowym dziedzińcu, w chmielniku i w mojej pracowni.</p></div>
-  <div class="kar wys-karty" data-kar>
-    <div class="kar-tor" tabindex="0" aria-label="Wystawy i plenery"><article class="karta"><figure><img src="img/w-rogow.webp" alt="Obrazy na kamiennym murze przy galerii autorskiej w Rogowie" loading="lazy" draggable="false"></figure><div class="gdzie">Rogów, 2019</div><h3>Wernisaż w galerii autorskiej</h3><p>Podczas 13. Festiwalu Filmu i Sztuki Dwa Brzegi zaprosiłam gości festiwalu i przyjaciół do mojej pracowni-galerii, 7 km od Kazimierza.</p></article><article class="karta"><figure><img src="img/w-janowiec.webp" alt="Widok z krużganków zamku w Janowcu" loading="lazy" draggable="false"></figure><div class="gdzie">Janowiec nad Wisłą</div><h3>Prapamięć - Krosno Maya</h3><p>Pierwszy pokaz całego cyklu: performance na dziedzińcu zamku, z widownią na krużgankach. Słowo, muzyka, ruch i obraz.</p></article><article class="karta"><figure><img src="img/w-kanal.webp" alt="Obrazy zawieszone nad rzeką Grodarz w Kazimierzu Dolnym" loading="lazy" draggable="false"></figure><div class="gdzie">Kazimierz Dolny, 2018</div><h3>IX Kanał Sztuki</h3><p>Obrazy malarzy Kazimierskiej Konfraterni Sztuki na cembrowinie rzeki Grodarz, od południa niemal do północy.</p></article><article class="karta"><figure><img src="img/w-chmielnik.webp" alt="Obrazy na sztalugach w chmielniku w Rogowie" loading="lazy" draggable="false"></figure><div class="gdzie">Rogów</div><h3>Obrazy w chmielniku</h3><p>Chmielnik jako konstrukcja wystawiennicza, akacjowy słup jako sztaluga. Z pomocą strażaków z OSP Rogów, sąsiadów i rodziny.</p></article><article class="karta"><figure><img src="img/w-rzeszow.webp" alt="Sala wystawowa BWA w Rzeszowie z obrazami cyklu Prapamięć" loading="lazy" draggable="false"></figure><div class="gdzie">BWA Rzeszów</div><h3>Prapamięć w głównej sali</h3><p>Najpiękniejsza i najodpowiedniejsza przestrzeń i światło, na jakie trafiłam w historii swoich wystaw.</p></article><article class="karta"><figure><img src="img/w-ziemia.webp" alt="Obraz Osiołek z Nazaret" loading="lazy" draggable="false"></figure><div class="gdzie">Nazaret, Betlejem, Jerozolima</div><h3>Plener w Ziemi Świętej</h3><p>Powstały tu m.in. Światło Jerozolimy, Mandala Betlejemska i Osiołek z Nazaret. Obrazy są w kolekcji malarstwa Kustodii Ziemi Świętej.</p></article><article class="karta"><figure><img src="img/w-remiza.webp" alt="Goście w Remizie Sztuki w Rogowie" loading="lazy" draggable="false"></figure><div class="gdzie">Rogów</div><h3>Remiza Sztuki</h3><p>Przez 7 lat dzierżawiłam zabytkową remizę. Powstawał w niej cykl Prapamięć, odbywały się wystawy, wieczory poezji, koncerty i warsztaty.</p></article></div>
-    <div class="kar-nav nawig"><button type="button" data-prev aria-label="Poprzednie"><svg viewBox="0 0 16 16"><path d="M10.5 2.5L5 8l5.5 5.5"/></svg></button><span class="licz" data-licz></span><button type="button" data-next aria-label="Następne"><svg viewBox="0 0 16 16"><path d="M5.5 2.5L11 8l-5.5 5.5"/></svg></button></div>
-  </div>
-  <div class="lista-wys">
-    <h2 class="tytul-m">Wybrane wystawy i plenery</h2>
-    <ul><li><b>2019</b>Galeria Teatru im. St. Jaracza, Otwock</li><li><b>2019</b>X Kanał Sztuki, Kazimierz Dolny</li><li><b>2019</b>Prapamięć i inne czasy, Galeria ORDY, Kock</li><li><b>2018</b>Plener Die Textile, Schmallenberg, Niemcy</li><li><b>2017</b>Metamorfozy, siedlisko Wiatrakowo, Kazimierz Dolny</li><li><b>2016</b>Sympozjum Artystyczno-Naukowe, Krzemieniec</li><li><b>2015</b>Plener malarski, Lennestadt, Niemcy</li><li><b>2010</b>Biennale Akwareli Baltic Bridges, Wilno</li><li><b>2008</b>Prapamięć, Galeria Ślad, Ełk</li><li><b>1998</b>Galeria Władysława Hasiora, Zakopane</li><li><b></b>Galeria Chłodna 20, Suwałki</li><li><b></b>Zagroda Ojrzanów, gmina Żabia Wola</li></ul>
-  </div>
+  <div class="glowa"><h1 class="tytul">Wystawy</h1><p>Wernisaże w galeriach, na zamkowym dziedzińcu, w chmielniku i w mojej pracowni. Kliknij wystawę, aby zobaczyć zdjęcia i opis.</p></div>
+  <section class="wys" id="wystawy" aria-label="Wystawy i plenery">
+    <div class="wys-tor" id="wys-tor" tabindex="0" aria-label="Wystawy - przewijaj w bok, kliknij, aby zobaczyć zdjęcia i opis"></div>
+    <div class="wys-sterowanie">
+      <div class="wys-listwa" aria-hidden="true"><span class="wys-suwak"></span></div>
+      <div class="wys-nawig"><button type="button" data-prev aria-label="Poprzednie wystawy"><svg viewBox="0 0 16 16"><path d="M10.5 2.5L5 8l5.5 5.5"/></svg></button><span class="licz" data-licz aria-live="polite"></span><button type="button" data-next aria-label="Następne wystawy"><svg viewBox="0 0 16 16"><path d="M5.5 2.5L11 8l-5.5 5.5"/></svg></button></div>
+    </div>
+    <noscript><p class="wys-dopisek">Aby zobaczyć wystawy, włącz JavaScript w przeglądarce.</p></noscript>
+  </section>
 </div>
 </main>
 <footer class="stopka">
@@ -79,6 +79,24 @@
 <dialog class="lb" id="lb" aria-label="Podgląd obrazu">
   <div class="lb-in"><img id="lb-img" alt=""><button type="button" class="lb-x" id="lb-x" aria-label="Zamknij">&times;</button></div>
 </dialog>
+<dialog class="wys-panel" id="wys-panel" aria-labelledby="wp-co">
+  <button type="button" class="wp-x" aria-label="Zamknij">&times;</button>
+  <div class="wp-in">
+    <div class="wp-tekst">
+      <h2 class="wp-co" id="wp-co"><span class="k" aria-hidden="true"></span><span class="t"></span></h2>
+      <p class="wp-meta"></p>
+      <p class="wp-tytul"></p>
+      <div class="wp-opis"></div>
+      <div class="wp-inne"><button type="button" data-w="-1">&lsaquo; Poprzednia wystawa</button><button type="button" data-w="1">Następna wystawa &rsaquo;</button></div>
+    </div>
+    <div class="wp-pokaz">
+      <div class="wp-scena" aria-live="polite"></div>
+      <div class="wp-nawig"><button type="button" data-f="-1" aria-label="Poprzednie zdjęcie"><svg viewBox="0 0 16 16"><path d="M10.5 2.5L5 8l5.5 5.5"/></svg></button><span class="licz"></span><button type="button" data-f="1" aria-label="Następne zdjęcie"><svg viewBox="0 0 16 16"><path d="M5.5 2.5L11 8l-5.5 5.5"/></svg></button><button type="button" class="wp-auto" aria-label="Zatrzymaj pokaz"></button></div>
+    </div>
+  </div>
+</dialog>
+<script src="wystawy-dane.js" defer></script>
+<script src="wystawy.js" defer></script>
 <script src="main.js" defer></script>
 </body>
 </html>

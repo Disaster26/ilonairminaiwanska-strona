@@ -279,18 +279,82 @@ p{margin:0 0 1em}
 .podpis{font:italic 400 clamp(20px,1.5vw,28px)/1.2 var(--serif);margin-top:1.4em;color:var(--szary)}
 @media (max-width:899px){.omnie{grid-template-columns:minmax(0,1fr)}}
 
-/* ---------- Wystawy ---------- */
-.wys-karty .karta{display:block}
-.karta figure{margin:0;aspect-ratio:3/2;overflow:hidden;background:#eee}
-.karta img{width:100%;height:100%;object-fit:cover;-webkit-user-drag:none}
-.karta .gdzie{font-size:14px;color:var(--szary);margin-top:14px}
-.karta h3{font:400 clamp(20px,1.4vw,26px)/1.2 var(--serif);margin:4px 0 8px}
-.karta p{font-size:15px;line-height:1.55;margin:0}
-.lista-wys{margin-top:clamp(40px,4vw,70px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:24px clamp(28px,4vw,80px)}
-.lista-wys ul{list-style:none;padding:0;margin:0;columns:2;column-gap:40px}
-.lista-wys li{break-inside:avoid;padding:9px 0;border-bottom:1px solid #e3e6e9;font-size:16px;display:flex;gap:16px}
-.lista-wys li b{font-weight:400;color:var(--szary);min-width:44px}
-@media (max-width:899px){.lista-wys{grid-template-columns:minmax(0,1fr)}.lista-wys ul{columns:1}}
+/* ---------- Wystawy (22.11: karuzela 4 w rzedzie, listwa przewijania, licznik na srodku, panel ze slajdami) ---------- */
+.wys{--g:clamp(14px,1.25vw,26px)}
+.wys-tor{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 3*var(--g))/4);gap:var(--g);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;cursor:grab;padding:2px 0 4px}
+.wys-tor::-webkit-scrollbar{display:none}
+.wys-tor.ciag{cursor:grabbing;scroll-snap-type:none}
+.wys-tor.ciag .wk{pointer-events:none}
+.wk{scroll-snap-align:start;display:flex;flex-direction:column;justify-content:flex-start;align-self:start;width:100%;padding:0;border:0;background:none;text-align:left;cursor:pointer;color:var(--ink);font:inherit}
+.wk:focus-visible{outline:2px solid #231f20;outline-offset:3px}
+.wk-foto{display:block;aspect-ratio:4/3;overflow:hidden;background:#eef0f2}
+.wk-foto img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s ease;-webkit-user-drag:none;user-select:none}
+.wk:hover .wk-foto img{transform:scale(1.035)}
+.wk-co{display:block;font:400 clamp(19px,1.35vw,26px)/1.22 var(--serif);margin-top:clamp(10px,.8vw,14px)}
+.wk-gdzie{display:block;font-size:clamp(14px,.9vw,16px);line-height:1.4;color:var(--szary);margin-top:4px}
+.wys-listwa{position:relative;height:18px;margin-top:clamp(16px,1.4vw,26px);cursor:pointer;touch-action:none}
+.wys-listwa::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:#cfd4d8}
+.wys-suwak{position:absolute;top:50%;left:0;height:4px;margin-top:-2px;background:#231f20;min-width:28px;cursor:grab;transition:background .2s}
+.wys-listwa:hover .wys-suwak{background:#000}
+.wys-nawig{display:flex;justify-content:center;align-items:center;gap:4px;margin-top:6px;font:400 clamp(17px,1.22vw,23px)/1 var(--serif)}
+.wys-nawig button,.wp-nawig button{width:42px;height:42px;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+.wys-nawig button:disabled,.wp-nawig button:disabled{opacity:.3;cursor:default}
+.wys-nawig svg,.wp-nawig svg{width:18px;height:18px;fill:none;stroke:#555;stroke-width:1.4}
+.wys-nawig button:not(:disabled):hover svg,.wp-nawig button:hover svg{stroke:#231f20}
+.wys-nawig .licz,.wp-nawig .licz{display:inline-block;min-width:4.6em;text-align:center;font-variant-numeric:tabular-nums}
+.wys-dopisek{margin:clamp(26px,2.4vw,44px) 0 0;font:italic 400 clamp(16px,1.1vw,20px)/1.45 var(--serif);color:var(--szary);text-align:center}
+@media (max-width:1179px){.wys-tor{grid-auto-columns:calc((100% - 2*var(--g))/3)}}
+@media (max-width:899px){.wys-tor{grid-auto-columns:calc((100% - var(--g))/2)}}
+/* telefon: karta na srodku, rowne kawalki sasiednich z obu stron */
+@media (max-width:639px){
+  .wys{--g:3vw}
+  .wys-tor{margin:0 calc(var(--pad) * -1);padding:2px 9vw 4px;grid-auto-columns:82vw;scroll-padding:0 9vw}
+  .wk{scroll-snap-align:center}
+  .wk-co{font-size:19px}
+}
+
+/* panel wystawy - uklad jak w dziale Obrazy: tekst po lewej, pokaz zdjec po prawej */
+html.wp-otw{overflow:hidden}
+.wys-panel{border:0;padding:0;margin:auto;width:min(96vw,1840px);height:min(92svh,1080px);max-width:none;max-height:none;background:#fff;color:var(--ink);box-shadow:0 18px 70px rgba(0,0,0,.18);overflow:hidden}
+.wys-panel::backdrop{background:rgba(245,246,247,.93)}
+.wys-panel[open]{animation:wp-in .28s ease}
+@keyframes wp-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.wp-in{display:grid;grid-template-columns:minmax(300px,30%) minmax(0,1fr);height:100%}
+.wp-tekst{overflow-y:auto;padding:clamp(28px,2.6vw,56px) clamp(24px,2.4vw,52px) clamp(24px,2vw,40px);display:flex;flex-direction:column;border-right:1px solid #e6e8eb;overscroll-behavior:contain}
+.wp-meta{margin:10px 0 0;font-size:clamp(14px,.95vw,17px);color:var(--szary)}
+.wp-co{display:flex;align-items:center;gap:12px;margin:0 52px 0 0;padding:6px 14px 6px 10px;font:400 clamp(20px,1.5vw,28px)/1.18 var(--serif);background:linear-gradient(90deg,#bfc6cc 0,#d3d8dc 55%,#f3f4f5 100%)}
+.wp-co .k{width:18px;height:18px;border-radius:50%;background:#fff;flex:none;position:relative}
+.wp-co .k::after{content:"";position:absolute;inset:5px;border-radius:50%;background:#231f20}
+.wp-tytul{margin:clamp(16px,1.3vw,24px) 0 0;font:italic 400 clamp(18px,1.3vw,24px)/1.35 var(--serif);color:var(--szary)}
+.wp-opis{font:400 clamp(17px,1.12vw,21px)/1.55 var(--serif);margin-top:clamp(14px,1.2vw,22px)}
+.wp-opis p{margin:0 0 .8em}
+.wp-inne{margin-top:auto;padding-top:20px;position:sticky;bottom:calc(clamp(24px,2vw,40px) * -1);background:linear-gradient(rgba(255,255,255,.0),#fff 18px);padding-bottom:6px;display:flex;justify-content:space-between;gap:12px;font-size:15px}
+.wp-inne button{border:0;background:none;padding:8px 0;cursor:pointer;font:inherit;color:var(--szary);text-align:left}
+.wp-inne button:last-child{text-align:right}
+.wp-inne button:hover{color:var(--ink)}
+.wp-inne button:disabled{visibility:hidden}
+.wp-pokaz{display:grid;grid-template-rows:minmax(0,1fr) auto;padding:clamp(20px,2vw,44px) clamp(20px,2vw,44px) 10px;min-width:0;min-height:0}
+.wp-scena{position:relative;min-height:0;touch-action:pan-y;user-select:none}
+.wp-f{position:absolute;inset:0;margin:auto;max-width:100%;max-height:100%;width:auto;height:auto;opacity:0;transition:opacity 1s ease;-webkit-user-drag:none}
+.wp-f.ak{opacity:1}
+.wp-nawig{display:flex;justify-content:center;align-items:center;gap:4px;padding-top:10px;font:400 clamp(17px,1.22vw,23px)/1 var(--serif)}
+.wp-auto{margin-left:10px}
+.wp-auto svg{width:14px!important;height:14px!important}
+.wp-x{position:absolute;top:10px;right:10px;z-index:3;width:46px;height:46px;border:1px solid #cfd4d8;background:#fff;font-size:26px;line-height:1;cursor:pointer;color:var(--ink)}
+.wp-x:hover{border-color:#231f20}
+@media (prefers-reduced-motion:reduce){.wp-f{transition:none}.wys-panel[open]{animation:none}}
+@media (max-width:899px){
+  .wys-panel{width:100vw;height:100svh;max-height:100svh;margin:0;box-shadow:none}
+  .wp-in{display:flex;flex-direction:column;height:100%;overflow-y:auto;overscroll-behavior:contain}
+  .wp-pokaz{order:-1;flex:none}
+  .wp-tekst{flex:none}
+  .wp-inne{position:static;background:none}
+  .wp-pokaz{display:block;padding:58px 0 0}
+  .wp-scena{height:min(72vw,58svh)}
+  .wp-nawig{padding-top:6px}
+  .wp-tekst{overflow:visible;border:0;padding:12px var(--pad) 28px}
+  .wp-x{position:fixed}
+}
 
 /* ---------- Galeria w Rogowie / kontakt ---------- */
 .dane{margin:1.6em 0 0;display:grid;gap:12px}
