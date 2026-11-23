@@ -143,7 +143,7 @@
       if(k==='daleko')k='ksiega';if(!C[k])k='prapamiec';cur=k;i=0;ms=0;msPop=-1;var c=C[k];
       d.querySelectorAll('.cyk[data-c]').forEach(function(b){b.setAttribute('aria-selected',b.dataset.c===k?'true':'false')});
       scena.setAttribute('aria-labelledby','tab-'+k);
-      opis.innerHTML=c.o.map(function(p){return '<p>'+p+'</p>'}).join('');
+      opis.innerHTML=c.o.map(function(p){return '<p>'+p+'</p>'}).join('');var cy=d.getElementById('cytat');if(cy){cy.hidden=!c.cyt;if(c.cyt){d.getElementById('cytat-t').innerHTML='<p>'+c.cyt.w.map(function(w){return '<span class="w">'+w+'</span>'}).join(' ')+'</p>';d.getElementById('cytat-a').textContent=c.cyt.a}}
       nawO.hidden=c.obr.length<2;
       if(!c.obr.length){box.hidden=true;opisO.hidden=true;mini.innerHTML='';pusty.textContent='Reprodukcje cyklu '+c.n+' zostaną dodane wkrótce.';if(!pusty.parentNode)scena.appendChild(pusty);wyczysc();}
       else{
