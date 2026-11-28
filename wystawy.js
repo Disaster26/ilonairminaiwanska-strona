@@ -62,7 +62,7 @@
   // po recznej zmianie pokaz staje na 12 s, potem rusza dalej
   function recznie(i){pokaz(i);stop();clearTimeout(pauza);pauza=null;if(auto&&!RM)pauza=setTimeout(function(){pauza=null;start()},12000)}
   function otworz(i,bezHash){cur=(i+W.length)%W.length;var w=W[cur];
-    eCo.textContent=w.co;eMeta.textContent=podpis(w);eMeta.hidden=!podpis(w);eTyt.textContent=w.tytul;
+    eCo.textContent=w.co;eMeta.textContent=podpis(w);eMeta.hidden=!podpis(w);eTyt.textContent=w.tytul||'';eTyt.hidden=!w.tytul;
     eOpis.innerHTML=w.tekst.map(function(p){return '<p>'+lam(p).replace(/\n/g,'<br>')+'</p>'}).join('');
     scena.innerHTML=w.zdj.map(function(z,j){return '<img class="wp-f" alt="'+esc(w.co+' - zdjęcie '+(j+1)+' z '+w.zdj.length)+'" style="max-width:min(100%,'+z.w+'px);max-height:min(100%,'+z.h+'px)" draggable="false">'}).join('');
     inP.disabled=cur===0;inN.disabled=cur===W.length-1;
